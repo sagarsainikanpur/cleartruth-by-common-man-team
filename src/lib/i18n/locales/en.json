@@ -1,0 +1,142 @@
+{
+  "common": {
+    "analyze": "Analyze",
+    "analyzing": "Analyzing...",
+    "reset": "Reset"
+  },
+  "error": {
+    "title": "Error"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About"
+  },
+  "header": {
+    "title": "Clear Truth",
+    "subtitle": "Your AI-powered partner for content verification."
+  },
+  "contentForm": {
+    "title": "Verify Content",
+    "description": "Paste text, enter a URL, or upload a file to check its credibility.",
+    "tabs": {
+      "text": "Text",
+      "url": "URL",
+      "upload": "Upload"
+    },
+    "placeholders": {
+      "text": "Paste the text you want to verify here..."
+    },
+    "upload": {
+      "click": "Click to upload",
+      "dragAndDrop": "or drag and drop",
+      "anyFile": "Upload any file",
+      "selected": "Selected"
+    },
+    "error": {
+      "inputRequired": "Input Required",
+      "textRequired": "Please enter some text to analyze.",
+      "urlRequired": "Please enter a URL to analyze.",
+      "fileRequired": "Please upload a file to analyze."
+    },
+    "fileReadError": {
+        "title": "File Read Error",
+        "description": "Could not read the selected file."
+    }
+  },
+  "resultDisplay": {
+    "title": "Analysis Result",
+    "description": "Credibility score and explanation based on AI analysis.",
+    "credibility": {
+      "high": "High Credibility",
+      "medium": "Medium Credibility",
+      "low": "Low Credibility"
+    },
+    "explanationTitle": "Detailed Explanation",
+    "share": {
+      "button": "Share Findings",
+      "failedTitle": "Sharing Failed",
+      "failedDescription": "Could not share the results. This might be due to browser permissions or not using HTTPS.",
+      "copiedTitle": "Copied to Clipboard",
+      "copiedDescription": "The analysis results have been copied.",
+      "copyFailedTitle": "Copy Failed",
+      "copyFailedDescription": "Could not copy results to clipboard."
+    }
+  },
+  "aboutPage": {
+    "main": {
+      "title": "Clear Truth",
+      "description": "AI-powered content verification",
+      "p1": "In an era of information overload, distinguishing fact from fiction can be challenging. Clear Truth is an AI-powered content verification tool designed to help users determine the credibility of text, URLs, or documents.",
+      "p2": "By leveraging advanced AI analysis, it provides a credibility score and a detailed explanation of the findings, empowering you to make informed decisions."
+    },
+    "appInfo": {
+      "title": "App Information",
+      "version": "App Version",
+      "framework": "Framework",
+      "uiLibrary": "UI Library",
+      "aiIntegration": "AI Integration"
+    },
+    "team": {
+      "title": "Our Team",
+      "description": "This application was proudly developed by the {{teamName}}."
+    }
+  },
+  "footer": {
+    "text": "© {{year}} by Comman Man Team",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last Updated: {{date}}",
+    "introduction": "Welcome to Clear Truth. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our service.",
+    "informationWeCollect": {
+      "title": "Information We Collect",
+      "content": "We may collect information that you provide directly to us, such as text, URLs, or files you submit for analysis. We do not store your content after the analysis is complete. We may collect anonymous usage data to improve our services."
+    },
+    "howWeUseYourInformation": {
+      "title": "How We Use Your Information",
+      "content": "We use the information you provide solely for the purpose of analyzing the content for credibility. We do not sell, trade, or otherwise transfer your information to outside parties."
+    },
+    "dataSecurity": {
+      "title": "Data Security",
+      "content": "We implement a variety of security measures to maintain the safety of your personal information. However, no method of transmission over the Internet is 100% secure."
+    },
+    "changesToThisPolicy": {
+      "title": "Changes to This Privacy Policy",
+      "content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page."
+    },
+    "contactUs": {
+      "title": "Contact Us",
+      "content": "If you have any questions about this Privacy Policy, please contact us."
+    }
+  },
+  "termsAndConditions": {
+    "title": "Terms and Conditions",
+    "lastUpdated": "Last Updated: {{date}}",
+    "acceptance": {
+      "title": "Acceptance of Terms",
+      "content": "By accessing and using our service, you accept and agree to be bound by the terms and provision of this agreement."
+    },
+    "useOfService": {
+      "title": "Use of Service",
+      "content": "You agree to use our services for lawful purposes only and in a way that does not infringe the rights of, restrict, or inhibit anyone else's use and enjoyment of the service."
+    },
+    "prohibitedConduct": {
+      "title": "Prohibited Conduct",
+      "content": "You are strictly prohibited from using the service to analyze or distribute illegal, harmful, or malicious content."
+    },
+    "termination": {
+      "title": "Termination",
+      "content": "We reserve the right to terminate or suspend your access to our service at our sole discretion, without notice, for conduct that we believe violates these Terms and Conditions or is harmful to other users of the service, us, or third parties, including but not limited to misuse of the AI and API. Any such misuse will lead to an immediate and permanent ban of your account."
+    },
+    "disclaimer": {
+      "title": "Disclaimer of Warranties",
+      "content": "The service is provided on an 'as is' and 'as available' basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties."
+    },
+    "contactUs": {
+      "title": "Contact Us",
+      "content": "If you have any questions about these Terms and Conditions, please contact us."
+    }
+  }
+}
