@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 import { useToast } from "@/hooks/use-toast";
-import { Share2, TrendingDown, TrendingUp, AlertCircle } from 'lucide-react';
+import { Share2, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { Label, Pie, PieChart, Cell } from "recharts";
 
 interface ResultDisplayProps {
@@ -19,20 +19,20 @@ const getScoreInfo = (score: number) => {
     return {
       color: "#22c55e" /* green-500 */,
       label: "High Credibility",
-      icon: <TrendingUp className="mr-1 h-4 w-4" />,
+      icon: <CheckCircle className="mr-1 h-4 w-4" />,
     };
   }
   if (score > 0.4) {
     return {
       color: "#f59e0b" /* yellow-500 */,
       label: "Medium Credibility",
-      icon: <AlertCircle className="mr-1 h-4 w-4" />,
+      icon: <AlertTriangle className="mr-1 h-4 w-4" />,
     };
   }
   return {
     color: "#ef4444" /* red-500 */,
     label: "Low Credibility",
-    icon: <TrendingDown className="mr-1 h-4 w-4" />,
+    icon: <XCircle className="mr-1 h-4 w-4" />,
   };
 };
 

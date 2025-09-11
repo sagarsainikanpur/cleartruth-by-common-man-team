@@ -24,18 +24,6 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith("image/")) {
-        toast({
-          variant: "destructive",
-          title: "Invalid File Type",
-          description: "Please upload an image file (e.g., PNG, JPG).",
-        });
-        setFileName("");
-        setFileContent(null);
-        event.target.value = ""; // Reset file input
-        return;
-      }
-      
       const reader = new FileReader();
       reader.onloadend = () => {
         setFileContent(reader.result as string);
@@ -84,7 +72,7 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Verify Content</CardTitle>
-        <CardDescription>Paste text or upload an image to check its credibility.</CardDescription>
+        <CardDescription>Paste text or upload a file to check its credibility.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
@@ -110,9 +98,9 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
                     <p className="mb-2 text-sm text-muted-foreground">
                       <span className="font-semibold text-primary">Click to upload</span> or drag and drop
                     </p>
-                    <p className="text-xs text-muted-foreground">Image files (PNG, JPG, etc.)</p>
+                    <p className="text-xs text-muted-foreground">Upload any file</p>
                   </div>
-                  <Input id="file-upload" type="file" className="hidden" onChange={handleFileChange} accept="image/*" disabled={isLoading} />
+                  <Input id="file-upload" type="file" className="hidden" onChange={handleFileChange} disabled={isLoading} />
                 </label>
                 {fileName && <p className="text-sm text-muted-foreground">Selected: {fileName}</p>}
               </div>
