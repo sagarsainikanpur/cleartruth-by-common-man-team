@@ -1,47 +1,54 @@
 'use server';
 /**
- * @fileOverview Analyzes content using AI to determine its credibility and provides an explanation of the findings.
+ * @fileOverview Yeh file content ko credibility ke liye analyze karne wala AI flow define karti hai.
  *
- * - analyzeContentForCredibility - A function that analyzes content for credibility.
- * - AnalyzeContentInput - The input type for the analyzeContentForCredibility function.
- * - AnalyzeContentOutput - The return type for the analyzeContentForCredibility function.
+ * - analyzeContentForCredibility - Content ko credibility ke liye analyze karne wala function.
+ * - AnalyzeContentInput - `analyzeContentForCredibility` function ke liye input type.
+ * - AnalyzeContentOutput - `analyzeContentForCredibility` function ka return type.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+// Zod ka istemal karke hum input ka schema define kar rahe hain.
+// Isse type-safety milti hai aur validation aasan ho jaata hai.
 const AnalyzeContentInputSchema = z.object({
   content: z
     .string()
-    .describe('The content to analyze, which can be text, a URL, an image data URI, or a document.'),
+    .describe('Woh content jise analyze karna hai. Yeh text, URL, ya document ka data URI ho sakta hai.'),
 });
 export type AnalyzeContentInput = z.infer<typeof AnalyzeContentInputSchema>;
 
+// Yahan hum output ka schema define kar rahe hain.
 const AnalyzeContentOutputSchema = z.object({
   credibilityScore: z
     .number()
-    .describe('A score indicating the credibility of the content (0-1).'),
+    .describe('Content ki credibility batane wala score (0 se 1 tak).'),
   explanation: z
     .string()
-    .describe('A detailed explanation of the credibility findings. Any URLs in the explanation should be formatted as markdown links, like [Source Name](https://example.com).'),
+    .describe('Credibility findings ka detailed explanation. Explanation mein diye gaye URLs markdown links [Source Name](https://example.com) ke format mein hone chahiye.'),
 });
 export type AnalyzeContentOutput = z.infer<typeof AnalyzeContentOutputSchema>;
 
+
+// Yeh function hamare flow ko call karne ke liye ek wrapper hai.
 export async function analyzeContentForCredibility(
   input: AnalyzeContentInput
 ): Promise<AnalyzeContentOutput> {
   return analyzeContentFlow(input);
 }
 
+// Yahan hum AI model ke liye prompt define kar rahe hain.
 const analyzeContentPrompt = ai.definePrompt({
   name: 'analyzeContentPrompt',
   input: {schema: AnalyzeContentInputSchema},
-  output: {schema: AnalyzeContentOutputSchema},
+  output: {schema: AnalyzeContentOutputSchema}, // Output ko structured format mein paane ke liye.
   prompt: `Analyze the following content for credibility, cross-referencing against multiple datasets and fact-checking APIs. Assign a credibility score (0-1) and provide a detailed explanation of your findings. It is crucial that you include verified alternatives and sources. Any URLs you provide in the explanation must be formatted as markdown links, for example: [Google](https://www.google.com).
 
 Content: {{{content}}}`,
 });
 
+// Yeh hamara main Genkit flow hai.
 const analyzeContentFlow = ai.defineFlow(
   {
     name: 'analyzeContentFlow',
@@ -49,7 +56,9 @@ const analyzeContentFlow = ai.defineFlow(
     outputSchema: AnalyzeContentOutputSchema,
   },
   async input => {
+    // Prompt ko input ke saath call karte hain.
     const {output} = await analyzeContentPrompt(input);
+    // AI se mile output ko return karte hain.
     return output!;
   }
 );

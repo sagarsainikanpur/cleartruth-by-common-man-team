@@ -1,44 +1,47 @@
-// src/ai/flows/assign-credibility-score.ts
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for assigning a credibility score to content after AI analysis.
+ * @fileOverview Yeh file AI analysis ke baad content ko credibility score assign karne ke liye Genkit flow define karti hai.
  *
- * - assignCredibilityScore - An async function that takes content as input and returns a credibility score.
- * - AssignCredibilityScoreInput - The input type for the assignCredibilityScore function.
- * - AssignCredibilityScoreOutput - The output type for the assignCredibilityScore function.
+ * - assignCredibilityScore - Ek async function jo content leta hai aur credibility score return karta hai.
+ * - AssignCredibilityScoreInput - `assignCredibilityScore` function ke liye input type.
+ * - AssignCredibilityScoreOutput - `assignCredibilityScore` function ka output type.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+// Input ka schema Zod se define kar rahe hain.
 const AssignCredibilityScoreInputSchema = z.object({
   analysisResult: z
     .string()
-    .describe('The analysis result of the content, including fact-checking and cross-referencing.'),
+    .describe('Content ka analysis result, jisme fact-checking aur cross-referencing shamil hai.'),
 });
 export type AssignCredibilityScoreInput = z.infer<
   typeof AssignCredibilityScoreInputSchema
 >;
 
+// Output ka schema Zod se define kar rahe hain.
 const AssignCredibilityScoreOutputSchema = z.object({
   credibilityScore: z
     .number()
     .describe(
-      'A score between 0 and 1 indicating the credibility of the content, where 0 is completely unreliable and 1 is completely reliable.'
+      '0 se 1 ke beech ka score jo content ki credibility batata hai, jahan 0 bilkul unreliable aur 1 bilkul reliable hai.'
     ),
-  explanation: z.string().describe('A detailed explanation of how the credibility score was determined.'),
+  explanation: z.string().describe('Credibility score kaise determine kiya gaya, uska detailed explanation.'),
 });
 export type AssignCredibilityScoreOutput = z.infer<
   typeof AssignCredibilityScoreOutputSchema
 >;
 
+// Yeh function hamare flow ko call karne ke liye ek wrapper hai.
 export async function assignCredibilityScore(
   input: AssignCredibilityScoreInput
 ): Promise<AssignCredibilityScoreOutput> {
   return assignCredibilityScoreFlow(input);
 }
 
+// AI model ke liye prompt.
 const assignCredibilityScorePrompt = ai.definePrompt({
   name: 'assignCredibilityScorePrompt',
   input: {schema: AssignCredibilityScoreInputSchema},
@@ -54,6 +57,8 @@ const assignCredibilityScorePrompt = ai.definePrompt({
   Explanation: `,
 });
 
+
+// Main Genkit flow.
 const assignCredibilityScoreFlow = ai.defineFlow(
   {
     name: 'assignCredibilityScoreFlow',
@@ -61,7 +66,9 @@ const assignCredibilityScoreFlow = ai.defineFlow(
     outputSchema: AssignCredibilityScoreOutputSchema,
   },
   async input => {
+    // Prompt ko call karke AI se result lete hain.
     const {output} = await assignCredibilityScorePrompt(input);
+    // Result ko return karte hain.
     return output!;
   }
 );

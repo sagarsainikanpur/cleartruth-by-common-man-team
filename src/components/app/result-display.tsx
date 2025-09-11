@@ -1,5 +1,7 @@
 "use client";
 
+// Yeh component AI analysis ke result ko display karta hai.
+
 import { useEffect, useState } from 'react';
 import type { AnalyzeContentOutput } from "@/ai/flows/analyze-content-for-credibility";
 import { Badge } from "@/components/ui/badge";
@@ -14,42 +16,45 @@ interface ResultDisplayProps {
   result: AnalyzeContentOutput;
 }
 
+// Yeh function credibility score ke hisab se color, label, aur icon return karta hai.
 const getScoreInfo = (score: number) => {
   if (score > 0.7) {
     return {
-      color: "#22c55e" /* green-500 */,
+      color: "#22c55e", // Green for High Credibility
       label: "High Credibility",
-      icon: <CheckCircle className="mr-2 h-5 w-5" />,
+      icon: <CheckCircle className="mr-2 h-5 w-5" />, // Green Tick Icon
     };
   }
   if (score > 0.4) {
     return {
-      color: "#f59e0b" /* yellow-500 */,
+      color: "#f59e0b", // Yellow for Medium Credibility
       label: "Medium Credibility",
-      icon: <AlertTriangle className="mr-2 h-5 w-5" />,
+      icon: <AlertTriangle className="mr-2 h-5 w-5" />, // Warning Icon
     };
   }
   return {
-    color: "#ef4444" /* red-500 */,
+    color: "#ef4444", // Red for Low Credibility
     label: "Low Credibility",
-    icon: <XCircle className="mr-2 h-5 w-5" />,
+    icon: <XCircle className="mr-2 h-5 w-5" />, // Red X Icon
   };
 };
 
+// Yeh function explanation text mein se markdown links ([text](url)) ko actual <a> tags mein convert karta hai.
 const renderExplanation = (explanation: string) => {
+  // Regular expression to find markdown-style links.
   const urlRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
   const parts = explanation.split(urlRegex);
 
   return parts.map((part, index) => {
+    // Har teesra element link text hota hai.
     if (index % 3 === 1) {
-      // This is the link text
       const linkText = part;
       const linkUrl = parts[index + 1];
       return (
         <a
           key={index}
           href={linkUrl}
-          target="_blank"
+          target="_blank" // Link naye tab mein khulega.
           rel="noopener noreferrer"
           className="text-primary underline hover:text-primary/80"
         >
@@ -57,19 +62,20 @@ const renderExplanation = (explanation: string) => {
         </a>
       );
     }
+    // Har chautha element URL hota hai, jise hum already handle kar chuke hain.
     if (index % 3 === 2) {
-      // This is the URL part, which we already handled
       return null;
     }
-    // This is a regular text part
+    // Baki ke parts normal text hain.
     return part;
-  }).filter(Boolean);
+  }).filter(Boolean); // null values ko array se hata dete hain.
 };
 
 export default function ResultDisplay({ result }: ResultDisplayProps) {
   const { toast } = useToast();
   const [isClient, setIsClient] = useState(false);
   
+  // `useEffect` ka istemal client-side APIs (jaise navigator) ko safely access karne ke liye.
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -78,6 +84,7 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
   const scoreIn100 = Math.round(score * 100);
   const scoreInfo = getScoreInfo(score);
 
+  // Pie chart ke liye data.
   const chartData = [
     { name: 'score', value: scoreIn100 },
     { name: 'background', value: 100 - scoreIn100 },
@@ -85,9 +92,11 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
 
   const chartConfig = {};
 
+  // Share button ka logic.
   const handleShare = async () => {
     const shareText = `Clear Truth Analysis:\nCredibility Score: ${scoreIn100}/100 (${scoreInfo.label})\n\nExplanation: ${result.explanation.substring(0, 200)}...`;
 
+    // Web Share API ka istemal, agar browser support karta hai.
     if (isClient && navigator.share) {
       try {
         await navigator.share({
@@ -95,14 +104,16 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
           text: shareText,
         });
       } catch (error) {
+        // Agar share karne mein error aata hai (e.g., user permission deny karta hai).
         console.error('Error sharing:', error);
         toast({
             variant: "destructive",
             title: "Sharing Failed",
-            description: "Could not share the results. This might be due to browser permissions or lack of HTTPS.",
+            description: "Could not share the results. This might be due to browser permissions or not using HTTPS.",
         });
       }
     } else if (isClient && navigator.clipboard) {
+      // Agar Web Share API available nahi hai, to clipboard par copy karo.
       try {
         await navigator.clipboard.writeText(shareText);
         toast({
@@ -131,6 +142,7 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
         <CardContent className="grid gap-6">
           <div className="flex flex-col items-center gap-4">
              <div className="h-48 w-48">
+                {/* Credibility score ka Pie Chart */}
                 <ChartContainer config={chartConfig} className="mx-auto aspect-square h-full w-full">
                   <PieChart>
                     <Pie
@@ -167,6 +179,7 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
                   </PieChart>
                 </ChartContainer>
             </div>
+            {/* Credibility label aur icon ke saath Badge */}
             <Badge variant="outline" className="py-2 px-4 text-lg" style={{ color: scoreInfo.color, borderColor: scoreInfo.color }}>
                 {scoreInfo.icon}
                 {scoreInfo.label}
@@ -177,11 +190,13 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
               <CardTitle className="text-xl">Detailed Explanation</CardTitle>
             </CardHeader>
             <CardContent>
+              {/* `whitespace-pre-wrap` se text formatting (jaise new lines) preserve hoti hai. */}
               <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
                 {renderExplanation(result.explanation)}
               </p>
             </CardContent>
           </Card>
+          {/* Share button sirf client-side par dikhega aur tabhi jab browser support kare. */}
           {isClient && (navigator.share || navigator.clipboard) && (
             <Button onClick={handleShare} variant="outline" className="w-full">
               <Share2 className="mr-2 h-4 w-4" /> Share Findings
