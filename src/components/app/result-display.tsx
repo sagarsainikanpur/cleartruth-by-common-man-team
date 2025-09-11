@@ -69,7 +69,7 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
         toast({
             variant: "destructive",
             title: "Sharing Failed",
-            description: "Could not share the results. This might be due to browser permissions.",
+            description: "Could not share the results. This might be due to browser permissions or lack of HTTPS.",
         });
       }
     } else if (isClient && navigator.clipboard) {
