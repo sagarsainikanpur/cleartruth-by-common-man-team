@@ -55,26 +55,36 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Default form submission ko rokte hain.
 
+    let contentToAnalyze = '';
+    let errorMessage = '';
+
     // Active tab ke hisab se content ko analyze ke liye bhejte hain.
     if (activeTab === 'text') {
       if (!textContent.trim()) {
-        toast({ variant: "destructive", title: "Input Required", description: "Please enter some text to analyze." });
-        return;
+        errorMessage = "Please enter some text to analyze.";
+      } else {
+        contentToAnalyze = textContent;
       }
-      onAnalyze(textContent);
     } else if (activeTab === 'url') {
       if (!urlContent.trim()) {
-        toast({ variant: "destructive", title: "Input Required", description: "Please enter a URL to analyze." });
-        return;
+        errorMessage = "Please enter a URL to analyze.";
+      } else {
+        contentToAnalyze = urlContent;
       }
-      onAnalyze(urlContent);
-    } else {
+    } else if (activeTab === 'upload') {
       if (!fileContent) {
-        toast({ variant: "destructive", title: "Input Required", description: "Please upload a file to analyze." });
-        return;
+        errorMessage = "Please upload a file to analyze.";
+      } else {
+        contentToAnalyze = fileContent;
       }
-      onAnalyze(fileContent);
     }
+
+    if (errorMessage) {
+      toast({ variant: "destructive", title: "Input Required", description: errorMessage });
+      return;
+    }
+
+    onAnalyze(contentToAnalyze);
   };
   
   return (
