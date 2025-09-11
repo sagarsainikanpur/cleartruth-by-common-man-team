@@ -66,6 +66,11 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
         });
       } catch (error) {
         console.error('Error sharing:', error);
+        toast({
+            variant: "destructive",
+            title: "Sharing Failed",
+            description: "Could not share the results. This might be due to browser permissions.",
+        });
       }
     } else if (isClient && navigator.clipboard) {
       try {
