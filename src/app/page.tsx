@@ -5,15 +5,17 @@ import type { AnalyzeContentOutput } from "@/ai/flows/analyze-content-for-credib
 import AppHeader from "@/components/app/header";
 import ContentForm from "@/components/app/content-form";
 import ResultDisplay from "@/components/app/result-display";
-import { Loader2, ShieldCheck, Home as HomeIcon } from "lucide-react";
+import { Loader2, ShieldCheck, Home as HomeIcon, RefreshCcw } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { analyzeContent } from "./actions";
 import { Sidebar, SidebarContent, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalyzeContentOutput | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [formKey, setFormKey] = useState(Date.now());
 
   const handleAnalysis = async (content: string) => {
     setIsLoading(true);
@@ -33,6 +35,14 @@ export default function Home() {
         setIsLoading(false);
     }
   };
+
+  const handleReset = () => {
+    setIsLoading(false);
+    setAnalysisResult(null);
+    setError(null);
+    setFormKey(Date.now());
+  };
+
 
   return (
     <>
@@ -59,7 +69,7 @@ export default function Home() {
           <AppHeader />
           <main className="container mx-auto px-4 py-8">
             <div className="max-w-3xl mx-auto grid gap-8">
-              <ContentForm onAnalyze={handleAnalysis} isLoading={isLoading} />
+              <ContentForm key={formKey} onAnalyze={handleAnalysis} isLoading={isLoading} />
               {isLoading && (
                 <div className="flex justify-center items-center p-8">
                   <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -72,6 +82,11 @@ export default function Home() {
                 </Alert>
               )}
               {analysisResult && <ResultDisplay result={analysisResult} />}
+              {(analysisResult || error) && (
+                <Button variant="destructive" onClick={handleReset} className="w-full">
+                  <RefreshCcw className="mr-2 h-4 w-4" /> Reset
+                </Button>
+              )}
             </div>
           </main>
         </div>
