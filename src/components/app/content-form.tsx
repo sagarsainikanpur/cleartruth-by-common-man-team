@@ -17,7 +17,7 @@ interface ContentFormProps {
   isLoading: boolean; // Loading state.
 }
 
-export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) {
+export default function ContentForm({ onAnalyze, isLoading, key: formKey }: ContentFormProps & { key: number }) {
   // State variables for different input types.
   const [textContent, setTextContent] = useState(""); // Text input ke liye.
   const [urlContent, setUrlContent] = useState(""); // URL input ke liye.

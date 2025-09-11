@@ -112,7 +112,7 @@ export default function Home() {
 
               {/* Jab result ya error ho, to Reset button dikhao. */}
               {(analysisResult || error) && (
-                <Button variant="destructive" onClick={handleReset} className="w-full">
+                <Button variant="outline" onClick={handleReset} className="w-full">
                   <RefreshCcw className="mr-2 h-4 w-4" /> Reset
                 </Button>
               )}
