@@ -5,9 +5,10 @@ import type { AnalyzeContentOutput } from "@/ai/flows/analyze-content-for-credib
 import AppHeader from "@/components/app/header";
 import ContentForm from "@/components/app/content-form";
 import ResultDisplay from "@/components/app/result-display";
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck, Home as HomeIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { analyzeContent } from "./actions";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,25 +35,47 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <AppHeader />
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto grid gap-8">
-          <ContentForm onAnalyze={handleAnalysis} isLoading={isLoading} />
-          {isLoading && (
-            <div className="flex justify-center items-center p-8">
-              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+    <>
+      <Sidebar>
+        <SidebarHeader>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="h-6 w-6 text-primary" />
+            <h2 className="text-xl font-semibold tracking-tight">Clear Truth</h2>
+          </div>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton href="#" isActive>
+                <HomeIcon />
+                Home
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <div className="min-h-screen bg-background text-foreground">
+          <AppHeader />
+          <main className="container mx-auto px-4 py-8">
+            <div className="max-w-3xl mx-auto grid gap-8">
+              <ContentForm onAnalyze={handleAnalysis} isLoading={isLoading} />
+              {isLoading && (
+                <div className="flex justify-center items-center p-8">
+                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
+                </div>
+              )}
+              {error && (
+                <Alert variant="destructive">
+                  <AlertTitle>Error</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              {analysisResult && <ResultDisplay result={analysisResult} />}
             </div>
-          )}
-          {error && (
-            <Alert variant="destructive">
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          {analysisResult && <ResultDisplay result={analysisResult} />}
+          </main>
         </div>
-      </main>
-    </div>
+      </SidebarInset>
+    </>
   );
 }

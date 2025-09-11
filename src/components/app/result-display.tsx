@@ -19,21 +19,51 @@ const getScoreInfo = (score: number) => {
     return {
       color: "#22c55e" /* green-500 */,
       label: "High Credibility",
-      icon: <CheckCircle className="mr-1 h-4 w-4" />,
+      icon: <CheckCircle className="mr-2 h-5 w-5" />,
     };
   }
   if (score > 0.4) {
     return {
       color: "#f59e0b" /* yellow-500 */,
       label: "Medium Credibility",
-      icon: <AlertTriangle className="mr-1 h-4 w-4" />,
+      icon: <AlertTriangle className="mr-2 h-5 w-5" />,
     };
   }
   return {
     color: "#ef4444" /* red-500 */,
     label: "Low Credibility",
-    icon: <XCircle className="mr-1 h-4 w-4" />,
+    icon: <XCircle className="mr-2 h-5 w-5" />,
   };
+};
+
+const renderExplanation = (explanation: string) => {
+  const urlRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+  const parts = explanation.split(urlRegex);
+
+  return parts.map((part, index) => {
+    if (index % 3 === 1) {
+      // This is the link text
+      const linkText = part;
+      const linkUrl = parts[index + 1];
+      return (
+        <a
+          key={index}
+          href={linkUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary underline hover:text-primary/80"
+        >
+          {linkText}
+        </a>
+      );
+    }
+    if (index % 3 === 2) {
+      // This is the URL part, which we already handled
+      return null;
+    }
+    // This is a regular text part
+    return part;
+  }).filter(Boolean);
 };
 
 export default function ResultDisplay({ result }: ResultDisplayProps) {
@@ -137,7 +167,7 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
                   </PieChart>
                 </ChartContainer>
             </div>
-            <Badge variant="outline" className="py-1 px-3 text-base" style={{ color: scoreInfo.color, borderColor: scoreInfo.color }}>
+            <Badge variant="outline" className="py-2 px-4 text-lg" style={{ color: scoreInfo.color, borderColor: scoreInfo.color }}>
                 {scoreInfo.icon}
                 {scoreInfo.label}
             </Badge>
@@ -148,7 +178,7 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
             </CardHeader>
             <CardContent>
               <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
-                {result.explanation}
+                {renderExplanation(result.explanation)}
               </p>
             </CardContent>
           </Card>

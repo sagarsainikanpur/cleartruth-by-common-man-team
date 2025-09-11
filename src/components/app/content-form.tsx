@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { FileText, Upload } from 'lucide-react';
+import { FileText, Upload, Link as LinkIcon } from 'lucide-react';
 
 interface ContentFormProps {
   onAnalyze: (content: string) => Promise<void>;
@@ -16,6 +16,7 @@ interface ContentFormProps {
 
 export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) {
   const [textContent, setTextContent] = useState("");
+  const [urlContent, setUrlContent] = useState("");
   const [fileContent, setFileContent] = useState<string | null>(null);
   const [fileName, setFileName] = useState("");
   const [activeTab, setActiveTab] = useState("text");
@@ -55,6 +56,16 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
         return;
       }
       onAnalyze(textContent);
+    } else if (activeTab === 'url') {
+      if (!urlContent.trim()) {
+        toast({
+          variant: "destructive",
+          title: "Input Required",
+          description: "Please enter a URL to analyze.",
+        });
+        return;
+      }
+      onAnalyze(urlContent);
     } else {
       if (!fileContent) {
         toast({
@@ -72,13 +83,14 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Verify Content</CardTitle>
-        <CardDescription>Paste text or upload a file to check its credibility.</CardDescription>
+        <CardDescription>Paste text, enter a URL, or upload a file to check its credibility.</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
           <Tabs defaultValue="text" onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="text"><FileText className="mr-2 h-4 w-4"/>Text</TabsTrigger>
+              <TabsTrigger value="url"><LinkIcon className="mr-2 h-4 w-4"/>URL</TabsTrigger>
               <TabsTrigger value="upload"><Upload className="mr-2 h-4 w-4"/>Upload</TabsTrigger>
             </TabsList>
             <TabsContent value="text" className="mt-4">
@@ -87,6 +99,15 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
                 className="min-h-[150px] resize-y"
                 value={textContent}
                 onChange={(e) => setTextContent(e.target.value)}
+                disabled={isLoading}
+              />
+            </TabsContent>
+            <TabsContent value="url" className="mt-4">
+              <Input
+                type="url"
+                placeholder="https://example.com"
+                value={urlContent}
+                onChange={(e) => setUrlContent(e.target.value)}
                 disabled={isLoading}
               />
             </TabsContent>
@@ -100,7 +121,7 @@ export default function ContentForm({ onAnalyze, isLoading }: ContentFormProps) 
                     </p>
                     <p className="text-xs text-muted-foreground">Upload any file</p>
                   </div>
-                  <Input id="file-upload" type="file" className="hidden" onChange={handleFileChange} disabled={isLoading} />
+                  <Input id="file-upload" type="file" className="hidden" onChange={handleFileChange} disabled={isLoading} accept="*/*" />
                 </label>
                 {fileName && <p className="text-sm text-muted-foreground">Selected: {fileName}</p>}
               </div>
