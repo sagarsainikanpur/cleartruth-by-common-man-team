@@ -1,17 +1,34 @@
 import AppHeader from "@/components/app/header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ShieldCheck, Info, Code, Users } from "lucide-react";
 
 export default function AboutPage() {
+  const appVersion = "1.0.0"; // You can manage this version number as needed
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppHeader />
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>About Clear Truth</CardTitle>
+        <div className="max-w-3xl mx-auto space-y-8">
+          <Card className="overflow-hidden">
+            <CardHeader className="bg-muted/30">
+              <div className="flex items-center gap-4">
+                <ShieldCheck className="h-10 w-10 text-primary" />
+                <div>
+                  <CardTitle className="text-3xl">Clear Truth</CardTitle>
+                  <CardDescription>
+                    AI-powered content verification
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-6 space-y-4">
               <p>
                 In an era of information overload, distinguishing fact from
                 fiction can be challenging. Clear Truth is an AI-powered
@@ -23,30 +40,49 @@ export default function AboutPage() {
                 score and a detailed explanation of the findings, empowering
                 you to make informed decisions.
               </p>
-              <h3 className="font-semibold text-lg pt-4">Features</h3>
-              <ul className="list-disc list-inside space-y-2">
-                <li>
-                  <strong>Text Analysis</strong>: Paste any text to get an
-                  instant credibility check.
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5" />
+                App Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex justify-between">
+                  <span>App Version:</span>
+                  <span className="font-mono">{appVersion}</span>
                 </li>
-                <li>
-                  <strong>URL Analysis</strong>: Enter a URL to analyze the
-                  content of a webpage.
+                <li className="flex justify-between">
+                  <span>Framework:</span>
+                  <span>Next.js</span>
                 </li>
-                <li>
-                  <strong>File Upload</strong>: Upload documents for a
-                  comprehensive credibility assessment.
+                 <li className="flex justify-between">
+                  <span>UI Library:</span>
+                  <span>ShadCN UI, TailwindCSS</span>
                 </li>
-                <li>
-                  <strong>Credibility Score</strong>: Get a simple,
-                  easy-to-understand score from 0 to 1.
-                </li>
-                <li>
-                  <strong>Detailed Explanations</strong>: Understand the
-                  reasoning behind the score with detailed explanations and links
-                  to sources.
+                 <li className="flex justify-between">
+                  <span>AI Integration:</span>
+                  <span>Genkit</span>
                 </li>
               </ul>
+            </CardContent>
+          </Card>
+
+           <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Our Team
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p className="text-muted-foreground">
+                    This application was proudly developed by the <span className="font-semibold text-foreground">Comman Man Team</span>.
+                </p>
             </CardContent>
           </Card>
         </div>
