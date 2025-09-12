@@ -6,12 +6,27 @@ import { Sun, Moon } from 'lucide-react'
 
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function ThemeToggle() {
+  const [mounted, setMounted] = React.useState(false)
   const { theme, setTheme } = useTheme()
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleThemeChange = (checked: boolean) => {
     setTheme(checked ? 'dark' : 'light')
+  }
+
+  if (!mounted) {
+    return (
+        <div className="flex items-center justify-between p-2 space-x-2">
+            <Skeleton className="h-5 w-12" />
+            <Skeleton className="h-6 w-11 rounded-full" />
+        </div>
+    )
   }
 
   return (
