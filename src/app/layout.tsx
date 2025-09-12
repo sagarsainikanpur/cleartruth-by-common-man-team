@@ -1,7 +1,10 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarHeader, SidebarInset, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from '@/components/ui/sidebar';
+import AppFooter from '@/components/app/footer';
+import { Home, Info, ShieldCheck } from 'lucide-react';
+import AppNavigation from '@/components/app/navigation';
 
 // Yeh file app ka root layout hai. Har page is layout ke andar render hota hai.
 
@@ -32,8 +35,26 @@ export default function RootLayout({
       <body className="font-body antialiased" suppressHydrationWarning>
         {/* SidebarProvider poore app mein sidebar state ko manage karta hai. */}
         <SidebarProvider>
-          {/* `{children}` yahan par current page (jaise page.tsx) render hoga. */}
-          {children}
+            {/* Sidebar component */}
+            <Sidebar>
+                <SidebarHeader>
+                <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-6 w-6 text-primary" />
+                    <h2 className="text-xl font-semibold tracking-tight">Clear Truth</h2>
+                </div>
+                </SidebarHeader>
+                <SidebarContent>
+                    <AppNavigation />
+                </SidebarContent>
+            </Sidebar>
+            <SidebarInset>
+                <div className="flex flex-col min-h-screen">
+                    <main className="flex-grow">
+                        {children}
+                    </main>
+                    <AppFooter />
+                </div>
+            </SidebarInset>
         </SidebarProvider>
         {/* Toaster component app mein notifications (toasts) dikhane ke liye hai. */}
         <Toaster />
