@@ -57,3 +57,4 @@ This will start the development server. Open [http://localhost:9002](http://loca
 *   [ShadCN UI](https://ui.shadcn.com/) - Component Library
 *   [Genkit](https://firebase.google.com/docs/genkit) - AI Framework
 *   [TypeScript](https://www.typescriptlang.org/)
+# cleartruth-by-common-man-team
