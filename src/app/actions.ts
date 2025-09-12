@@ -22,10 +22,11 @@ export async function analyzeContent(content: string) {
     
     // Agar sab theek raha, to result ko data property mein return karte hain.
     return { data: result, error: null };
-  } catch (error) {
+  } catch (error: any) {
     // Agar AI analysis mein koi error aata hai, to use console par log karte hain.
     console.error("AI analysis failed:", error);
     // Aur user-friendly error message return karte hain.
-    return { data: null, error: "Failed to analyze content. The AI service may be temporarily unavailable." };
+    const errorMessage = error.message || "Failed to analyze content. The AI service may be temporarily unavailable.";
+    return { data: null, error: errorMessage };
   }
 }
