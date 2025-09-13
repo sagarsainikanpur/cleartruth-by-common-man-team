@@ -1,3 +1,4 @@
+
 "use server";
 
 // Yeh ek Next.js server action file hai.
@@ -26,8 +27,16 @@ export async function analyzeContent(content: string, language: string) {
   } catch (error: any) {
     // Agar AI analysis mein koi error aata hai, to use console par log karte hain.
     console.error("AI analysis failed:", error);
+    
+    let errorMessage = "Failed to analyze content. The AI service may be temporarily unavailable.";
+
+    if (error.message && (error.message.includes('503') || error.message.toLowerCase().includes('model is overloaded'))) {
+        errorMessage = "The AI service is currently overloaded. Please try again in a few moments.";
+    } else if (error.message) {
+        errorMessage = error.message;
+    }
+
     // Aur user-friendly error message return karte hain.
-    const errorMessage = error.message || "Failed to analyze content. The AI service may be temporarily unavailable.";
     return { data: null, error: errorMessage };
   }
 }

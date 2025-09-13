@@ -111,6 +111,8 @@ export default function ContentForm({
     onAnalyze(contentToAnalyze);
   };
 
+  const supportedFileTypes = "DOCX, XLSX, PNG, JPG, etc.";
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -177,7 +179,7 @@ export default function ContentForm({
                       {t('contentForm.upload.dragAndDrop')}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {t('contentForm.upload.anyFile')}
+                      {supportedFileTypes}
                     </p>
                   </div>
                   <Input
@@ -186,7 +188,7 @@ export default function ContentForm({
                     className="hidden"
                     onChange={handleFileChange}
                     disabled={isLoading}
-                    accept="*/*"
+                    accept=".docx,.xlsx,.png,.jpg,.jpeg"
                   />
                 </label>
                 {fileName && (

@@ -39,7 +39,7 @@ export default function Home() {
         // `analyzeContent` server action ko call karte hain.
         const result = await analyzeContent(content, language);
         if (!result) {
-            setError("The server action failed to respond. The uploaded file may be too large.");
+            setError("The server action failed to respond. Please check your network connection or try again later.");
         } else if (result.error || !result.data) {
             // Agar server se error milta hai ya data nahi milta.
             setError(result.error || "Analysis returned no data.");

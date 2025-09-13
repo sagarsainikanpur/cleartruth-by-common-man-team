@@ -1,62 +1,54 @@
 'use server';
-/**
- * @fileOverview Yeh file content ko credibility ke liye analyze karne wala AI flow define karti hai.
- *
- * - analyzeContentForCredibility - Content ko credibility ke liye analyze karne wala function.
- * - AnalyzeContentInput - `analyzeContentForCredibility` function ke liye input type.
- * - AnalyzeContentOutput - `analyzeContentForCredibility` function ka return type.
- */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-// Zod ka istemal karke hum input ka schema define kar rahe hain.
-// Isse type-safety milti hai aur validation aasan ho jaata hai.
+import mammoth from 'mammoth';            // DOCX
+import * as XLSX from 'xlsx';             // XLSX
+import Tesseract from 'tesseract.js';     // OCR for images
+
 const AnalyzeContentInputSchema = z.object({
-  content: z
-    .string()
-    .describe('Woh content jise analyze karna hai. Yeh text, URL, ya document ka data URI ho sakta hai.'),
-  language: z.string().optional().describe('The language for the analysis result. Default is English.'),
+  content: z.string(), // text | URL | data URI
+  language: z.string().optional(),
 });
 export type AnalyzeContentInput = z.infer<typeof AnalyzeContentInputSchema>;
 
-// Yahan hum output ka schema define kar rahe hain.
 const AnalyzeContentOutputSchema = z.object({
-  credibilityScore: z
-    .number()
-    .describe('Content ki credibility batane wala score (0 se 1 tak).'),
-  explanation: z
-    .string()
-    .describe('Credibility findings ka detailed explanation. Explanation mein diye gaye URLs markdown links [Source Name](https://example.com) ke format mein hone chahiye.'),
+  credibilityScore: z.number(),
+  explanation: z.string(),
 });
 export type AnalyzeContentOutput = z.infer<typeof AnalyzeContentOutputSchema>;
 
-
-// Yeh function hamare flow ko call karne ke liye ek wrapper hai.
 export async function analyzeContentForCredibility(
   input: AnalyzeContentInput
 ): Promise<AnalyzeContentOutput> {
   return analyzeContentFlow(input);
 }
 
-// Yahan hum AI model ke liye prompt define kar rahe hain.
+// Define the prompt
 const analyzeContentPrompt = ai.definePrompt({
   name: 'analyzeContentPrompt',
-  input: {schema: AnalyzeContentInputSchema},
-  output: {schema: AnalyzeContentOutputSchema}, // Output ko structured format mein paane ke liye.
-  prompt: `You are an expert at analyzing content for credibility. Your task is to provide a credibility score and a detailed explanation.
+  input: {schema: z.object({ content: z.string(), language: z.string().optional() })},
+  output: {schema: AnalyzeContentOutputSchema},
+  prompt: `You are an expert at analyzing content for credibility.
 
 Analyze the following content for credibility. Cross-reference it against multiple datasets and fact-checking sources.
-- If the provided content is an image (like a newspaper clipping or screenshot), you MUST perform OCR to extract any text within it before proceeding with the analysis.
-- Based on your analysis of the text (either provided directly or extracted via OCR), assign a credibility score from 0 (not credible) to 1 (highly credible).
-- Provide a detailed explanation for your score in the requested language: {{language}}.
-- In your explanation, it is crucial that you include verified alternatives and reliable sources.
-- Any URLs you provide in the explanation must be formatted as markdown links, for example: [Google](https://www.google.com).
+- Assign a credibility score from 0 (not credible) to 1 (highly credible).
+- Provide a detailed explanation in {{language}} (default: English).
+- Include reliable alternatives and sources.
+- Any URLs you include must be markdown links, e.g. [Google](https://www.google.com).
 
-Content to Analyze: {{media url=content}}`,
+Content to Analyze:
+{{{content}}}`,
 });
 
-// Yeh hamara main Genkit flow hai.
+// Helper: run OCR on images
+async function extractTextFromImage(buffer: Buffer): Promise<string> {
+  const { data: { text } } = await Tesseract.recognize(buffer, 'eng');
+  return text.trim();
+}
+
+// Main flow
 const analyzeContentFlow = ai.defineFlow(
   {
     name: 'analyzeContentFlow',
@@ -64,9 +56,39 @@ const analyzeContentFlow = ai.defineFlow(
     outputSchema: AnalyzeContentOutputSchema,
   },
   async input => {
-    // Prompt ko input ke saath call karte hain.
-    const {output} = await analyzeContentPrompt(input);
-    // AI se mile output ko return karte hain.
+    let content = input.content;
+
+    if (content.startsWith('data:')) {
+      const [meta, base64] = content.split(',');
+      const mime = meta.split(';')[0].slice(5);
+      const buffer = Buffer.from(base64, 'base64');
+
+      try {
+        if (mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+          const result = await mammoth.extractRawText({ buffer });
+          content = result.value;
+        } else if (mime === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+          const workbook = XLSX.read(buffer, { type: 'buffer' });
+          content = Object.values(workbook.Sheets)
+            .map(sheet => XLSX.utils.sheet_to_csv(sheet as any))
+            .join('\n');
+        } else if (mime.startsWith('image/')) {
+          content = await extractTextFromImage(buffer);
+        } else {
+          content = '[Unsupported file format: could not extract text]';
+        }
+      } catch (err) {
+        console.error('Extraction error:', err);
+        content = '[Error extracting content from file]';
+      }
+    }
+
+    // Call Gemini with plain text only
+    const { output } = await analyzeContentPrompt({
+      ...input,
+      content,
+    });
+
     return output!;
   }
 );

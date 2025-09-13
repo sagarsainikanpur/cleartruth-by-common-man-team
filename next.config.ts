@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '4.5mb',
+    },
+    allowedDevOrigins: [
+        "https://6000-firebase-studio-1757613713801.cluster-ulqnojp5endvgve6krhe7klaws.cloudworkstations.dev"
+    ]
+  },
   images: {
     remotePatterns: [
       {
